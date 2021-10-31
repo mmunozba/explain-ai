@@ -4,17 +4,22 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 export async function getStaticProps() {
-    const backendData = await fetch('http://localhost:5000/')
+    const helloResponse = await fetch('http://localhost:5000/')
         .then(response => response.json().then(json => json.lastmessage))
+        .catch(error => error.toString())
+    const predictResponse = await fetch('http://localhost:5000/predict')
+        .then(response => response.json().then(json => JSON.stringify(json)))
         .catch(error => error.toString())
     return {
         props: {
-            backendData
+            helloResponse,
+            predictResponse,
         }
     }
 }
 
-export default function Home({backendData}) {
+export default function Home({helloResponse, predictResponse, explainResponse}) {
+
     return(
         <div className={styles.container}>
             <Head>
@@ -30,7 +35,22 @@ export default function Home({backendData}) {
 
                 <p className={styles.description}>
                     Last Message: {' '}
-                    <code className={styles.code}>{backendData}</code>
+                    <code className={styles.code}>{helloResponse}</code>
+                </p>
+
+                <p className={styles.description}>
+                    Prediction: {' '}
+                    <code className={styles.code}>{predictResponse}</code>
+                </p>
+                <p className={styles.description}>
+                    Explanation:
+                <Image
+
+                    src="http://localhost:5000/explain"
+                    height={300}
+                    width={2000}
+                    unoptimized={true}
+                />
                 </p>
             </main>
 
