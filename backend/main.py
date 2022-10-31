@@ -1,4 +1,4 @@
-from flask import Flask, send_file
+from flask import Flask, send_file, jsonify
 from tensorflow import keras
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -11,9 +11,9 @@ model = keras.models.load_model('model/trained-regressor')
 
 @app.route('/')
 def hello_world():
-    return {
-        "lastmessage": "Goodbye",
-    }
+    response = jsonify({"lastmessage": "Goodbye",})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/explain')
