@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Input, Dense, Flatten, Concatenate, concatenate, Dropout, Lambda, Embedding
 from tensorflow.keras.models import Model
 from tqdm import tqdm
+import pandas as pd
 import shap
 
 # print the JS visualization code to the notebook
@@ -13,10 +14,14 @@ shap.initjs()
 
 # --------------------------------------
 # Load dataset
+data = pd.read_csv('data/dataset.csv')   # dataset location
+i = 8                                                       # index of label
 
-X,y = shap.datasets.adult()
-X_display,y_display = shap.datasets.adult(display=True)
+# Select labels
+X = data.drop(data.columns[i],axis=1)
+y = data.iloc[:, 8]
 
+# X,y = shap.datasets.adult()
 # normalize data (this is important for model convergence)
 dtypes = list(zip(X.dtypes.index, map(str, X.dtypes)))
 for k,dtype in dtypes:
@@ -56,4 +61,4 @@ regression.fit(
     validation_data=([X_valid[k].values for k,t in dtypes], y_valid)
 )
 
-regression.save('model/trained-regressor')
+regression.save('/model/trained-regressor')
