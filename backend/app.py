@@ -32,10 +32,12 @@ def predict():
     X_display, y_display = shap.datasets.adult(display=True)
     explainer = shap.KernelExplainer(f, X.iloc[:50, :])
     shap_values = explainer.shap_values(X.iloc[299, :], nsamples=500)
-    return { # from https://stackoverflow.com/a/44752209
+    response = jsonify({ # from https://stackoverflow.com/a/44752209
         "expectedvalue": pd.Series(explainer.expected_value).to_json(orient='values'),
         "shapvalues": pd.Series(shap_values).to_json(orient='values'),
-    }
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 def f(X):

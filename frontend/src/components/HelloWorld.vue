@@ -4,7 +4,9 @@ import { ref } from 'vue'
 defineProps<{
   msg: string
 }>()
-const helloResponse = ref("Placeholder")
+const helloResponse = ref("Hello Placeholder")
+const predictResponse = ref("[Predict Placeholder]")
+const explanationSource = ref("/img/explanationFiller.png")
 
 async function getResponse() {
   helloResponse.value = await fetch('http://localhost:5000/')
@@ -12,13 +14,26 @@ async function getResponse() {
         .catch(error => error.toString())
 }
 
+async function getPrediction() {
+  predictResponse.value = await fetch('http://localhost:5000/predict')
+        .then(response => response.json().then(json => JSON.stringify(json)))
+        .catch(error => error.toString())
+}
+
+async function getExplanation() {
+  explanationSource.value = "http://localhost:5000/explain"
+}
 </script>
 
 <template>
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h1>{{helloResponse}}</h1>
+    <h1>Prediction: {{predictResponse}}</h1>
     <button @click="getResponse()">Get Response</button>
+    <button @click="getPrediction()">Get Prediction</button>
+    <button @click="getExplanation()">Get Explanation</button>
+    Explanation:<img :src="explanationSource" />
     <h3>
       You’ve successfully created a project with
       <a href="https://vitejs.dev/" target="_blank" rel="noopener">Vite</a> +
