@@ -130,3 +130,8 @@ dmypy.json
 
 # PyCharm files
 .idea/
+
+# Backend
+backend/model/*
+backend/data/*
+backend/testing.py
