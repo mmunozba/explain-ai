@@ -33,7 +33,7 @@ async function getExplanation() {
     <button @click="getResponse()">Get Response</button>
     <button @click="getPrediction()">Get Prediction</button>
     <button @click="getExplanation()">Get Explanation</button>
-    Explanation:<img :src="explanationSource" />
+    <img :src="explanationSource" />
     <h3>
       You’ve successfully created a project with
       <a href="https://vitejs.dev/" target="_blank" rel="noopener">Vite</a> +

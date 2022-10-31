@@ -7,7 +7,9 @@ import json
 
 app = Flask(__name__)
 model = keras.models.load_model('model/trained-regressor')
-
+# TODO Allow custom datasets
+datapath = 'data/dataset.csv'
+y_label_index = 8
 
 @app.route('/')
 def hello_world():
@@ -18,8 +20,14 @@ def hello_world():
 
 @app.route('/explain')
 def explain():
-    X, y = shap.datasets.adult()
-    X_display, y_display = shap.datasets.adult(display=True)
+    # Load dataset
+    data = pd.read_csv(datapath)   # dataset location
+    i = y_label_index              # index of label
+
+    # Select labels
+    X = data.drop(data.columns[i],axis=1)
+    y = data.iloc[:, 8]
+    X_display, y_display = X, y
     explainer = shap.KernelExplainer(f, X.iloc[:50, :])
     shap_values = explainer.shap_values(X.iloc[299, :], nsamples=500)
     shap.force_plot(explainer.expected_value, shap_values, X_display.iloc[299, :], show=False, matplotlib=True)\
@@ -28,8 +36,14 @@ def explain():
 
 @app.route('/predict')
 def predict():
-    X, y = shap.datasets.adult()
-    X_display, y_display = shap.datasets.adult(display=True)
+    # Load dataset
+    data = pd.read_csv(datapath)   # dataset location
+    i = y_label_index              # index of label
+
+    # Select labels
+    X = data.drop(data.columns[i],axis=1)
+    y = data.iloc[:, 8]
+    X_display, y_display = X, y
     explainer = shap.KernelExplainer(f, X.iloc[:50, :])
     shap_values = explainer.shap_values(X.iloc[299, :], nsamples=500)
     response = jsonify({ # from https://stackoverflow.com/a/44752209
